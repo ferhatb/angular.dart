@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -evx
 
 #  If we're on the presubmit branch, the dev Dart release, and all unit
 #  tests pass, merge the presubmit branch into master and push it.
@@ -24,13 +24,15 @@ if [ "$TRAVIS_REPO_SLUG" = "angular/angular.dart" ]; then
     git config user.name "travis@travis-ci.org"
 
     echo "Pushing HEAD to master..."
-    git remote add upstream https://github.com/angular/angular.dart.git
+    git remote add github https://github.com/angular/angular.dart.git
     git stash
-    git fetch upstream master
-    git rebase upstream/master
-    if git push upstream HEAD:master; then
+    git fetch github master
+    git status
+    git log
+    git rebase github/master
+    if git push github HEAD:master; then
       echo "$TRAVIS_BRANCH has been merged into master, deleting..."
-      git push upstream :"$TRAVIS_BRANCH"
+      git push github :"$TRAVIS_BRANCH"
     fi
   fi
 fi
