@@ -120,25 +120,25 @@ main() {
       S.assertTodos();
     });
 
-    // TODO(chirayu): Disabled because this times out on Travis + SauceLabs.
-    xit('should add a new item and clear the input field', () {
-      var text = 'Test using Protractor';
-      S.newItemInput.sendKeys(text);
-      S.addBtn.click();
-      S.assertNewItem('');
-      S.todos.add(text);
-      S.checks.add(false);
-      S.assertTodos();
+    describe('add item', () {
+      it('should add item and clear the input field when clicking the add button', () {
+        var text = 'Test using Protractor';
+        S.newItemInput.sendKeys(text);
+        S.addBtn.click();
+        S.assertNewItem('');
+        S.todos.add(text);
+        S.checks.add(false);
+        S.assertTodos();
+      });
 
-      // This time, use the <Enter> key instead of clicking the add
-      // button.
-      text = 'Pressed enter in the input field';
-      S.newItemInput.sendKeys(text + '\n');
-      S.addBtn.click();
-      S.assertNewItem('');
-      S.todos.add(text);
-      S.checks.add(false);
-      S.assertTodos();
+      it('should add item and clear the input field when enter is pressed', () {
+        var text = 'Pressed enter in the input field';
+        S.newItemInput.sendKeys(text + '\n');
+        S.assertNewItem('');
+        S.todos.add(text);
+        S.checks.add(false);
+        S.assertTodos();
+      });
     });
 
     it('should have empty list when all items are done', () {
