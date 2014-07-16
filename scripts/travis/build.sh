@@ -39,32 +39,36 @@ fi
 
 if [[ $TESTS == "dart2js" ]]; then
   # skip auxiliary tests if we are only running dart2js
-  echo '------------------------'
-  echo '-- BUILDING: examples --'
-  echo '------------------------'
+  # This following needs to be done only once per dart2js config.  We'll only do
+  # it for the jobs using the Chrome browser.
+  if [[ $BROWSERS == *hrome* ]]; then
+    echo '------------------------'
+    echo '-- BUILDING: examples --'
+    echo '------------------------'
 
-  if [[ $CHANNEL == "DEV" ]]; then
-    $DART "$NGDART_BASE_DIR/bin/pub_build.dart" -p example \
-        -e "$NGDART_BASE_DIR/example/expected_warnings.json"
-  else
-    ( cd example; pub build )
-  fi
-
-  (
-    echo '-----------------------------------'
-    echo '-- BUILDING: verify dart2js size --'
-    echo '-----------------------------------'
-    cd $NGDART_BASE_DIR/example
-    checkSize build/web/animation.dart.js 208021
-    checkSize build/web/bouncing_balls.dart.js 202325
-    checkSize build/web/hello_world.dart.js 199919
-    checkSize build/web/todo.dart.js 203121
-    if ((SIZE_TOO_BIG_COUNT > 0)); then
-      exit 1
+    if [[ $CHANNEL == "DEV" ]]; then
+      $DART "$NGDART_BASE_DIR/bin/pub_build.dart" -p example \
+          -e "$NGDART_BASE_DIR/example/expected_warnings.json"
     else
-      echo Generated JavaScript file size check OK.
+      ( cd example; pub build )
     fi
-  )
+
+    (
+      echo '-----------------------------------'
+      echo '-- BUILDING: verify dart2js size --'
+      echo '-----------------------------------'
+      cd $NGDART_BASE_DIR/example
+      checkSize build/web/animation.dart.js 208021
+      checkSize build/web/bouncing_balls.dart.js 202325
+      checkSize build/web/hello_world.dart.js 199919
+      checkSize build/web/todo.dart.js 203121
+      if ((SIZE_TOO_BIG_COUNT > 0)); then
+        exit 1
+      else
+        echo Generated JavaScript file size check OK.
+      fi
+    )
+  fi
 else
   echo '--------------'
   echo '-- TEST: io --'
